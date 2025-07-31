@@ -1,28 +1,37 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { register, login } from '@/lib/appwrite';
 import Link from 'next/link';
 
 export default function AuthPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
+    setError(null);
+    setSuccess(null);
     try {
-      // TODO: Implement authentication logic using Appwrite
-      console.log('Auth attempt:', { email, password, name, isLogin });
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-    } catch (error) {
-      console.error('Auth error:', error);
+      if (isLogin) {
+        await login(email, password);
+        router.push('/app');
+      } else {
+        await register(email, password, name);
+        setSuccess('Account created! You can now sign in.');
+        setIsLogin(true);
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Authentication failed.');
     } finally {
       setIsLoading(false);
     }
@@ -41,6 +50,12 @@ export default function AuthPage() {
             </p>
           </div>
 
+          {error && (
+            <div className="mb-4 text-red-400 text-center text-sm font-medium">{error}</div>
+          )}
+          {success && (
+            <div className="mb-4 text-green-400 text-center text-sm font-medium">{success}</div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <div>
