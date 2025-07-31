@@ -170,13 +170,6 @@ export default function AuthPage() {
             <div className="text-center">
               <p className="text-slate-500 text-sm mb-4">Or continue with</p>
               <div className="space-y-3">
-                <button className="w-full bg-[#0088cc] hover:bg-[#006699] text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center">
-                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.169 1.858-.896 3.463-2.001 4.715-1.194 1.351-2.852 2.063-4.835 2.063-.545 0-1.085-.054-1.608-.16v-3.917h2.154v-1.68h-2.154V7.142h-1.72v2.039H5.25v1.68h2.154v3.917c-.523.106-1.063.16-1.608.16-1.983 0-3.641-.712-4.835-2.063C-.144 11.623-.871 10.018-1.04 8.16"/>
-                  </svg>
-                  Continue with Telegram
-                </button>
-                
                 <button className="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center">
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
