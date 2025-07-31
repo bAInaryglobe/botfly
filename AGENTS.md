@@ -26,13 +26,15 @@ always push all changes to githhb (commit messages no more than one concise sent
 
 ## Proposed Appwrite Database Structure
 
+> **Note:** All collections include a `deleted` (boolean) field for soft deletion and offline sync support (for Appwrite + RxDB integration).
+
 | Collection | Purpose | Example Fields |
 |------------|---------|---------------|
-| users      | User profiles (optional, for extra info) | name, email, avatarUrl, createdAt |
-| projects   | User projects/workspaces | name, description, owner (userId), createdAt, updatedAt |
-| agents     | AI agents per project | name, projectId, config, status, createdAt, updatedAt |
-| messages   | Chat or logs for agents | agentId, projectId, userId, content, type, timestamp |
-| settings   | User or project settings | userId/projectId, key, value |
+| users      | User profiles (optional, for extra info) | name, email, avatarUrl, createdAt, deleted |
+| projects   | User projects/workspaces | name, description, owner (userId), createdAt, updatedAt, deleted |
+| agents     | AI agents per project | name, projectId, config, status, createdAt, updatedAt, deleted |
+| messages   | Chat or logs for agents | agentId, projectId, userId, content, type, timestamp, deleted |
+| settings   | User or project settings | userId/projectId, key, value, deleted |
 
 ### Example: "projects" Collection Schema
 - name (string, required)
@@ -40,6 +42,7 @@ always push all changes to githhb (commit messages no more than one concise sent
 - owner (userId, required, relation to users)
 - createdAt (datetime, auto)
 - updatedAt (datetime, auto)
+- deleted (boolean, default: false)
 
 ### Example: "agents" Collection Schema
 - name (string, required)
@@ -48,3 +51,4 @@ always push all changes to githhb (commit messages no more than one concise sent
 - status (string, e.g., 'active', 'paused')
 - createdAt (datetime, auto)
 - updatedAt (datetime, auto)
+- deleted (boolean, default: false)
