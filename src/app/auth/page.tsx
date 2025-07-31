@@ -27,8 +27,13 @@ export default function AuthPage() {
         router.push('/app');
       } else {
         await register(email, password, name);
-        setSuccess('Account created! You can now sign in.');
-        setIsLogin(true);
+        try {
+          await login(email, password);
+          router.push('/app');
+        } catch (loginErr: any) {
+          setError('Account created, but failed to log in: ' + (loginErr?.message || 'Unknown error.'));
+          return;
+        }
       }
     } catch (err: any) {
       setError(err?.message || 'Authentication failed.');
