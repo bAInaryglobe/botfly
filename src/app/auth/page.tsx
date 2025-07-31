@@ -9,7 +9,7 @@ export default function AuthPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +39,7 @@ export default function AuthPage() {
         await login(email, password);
         router.push('/app');
       } else {
-        await register(email, password, name);
+        await register(email, password, username);
         try {
           await login(email, password);
           router.push('/app');
@@ -85,18 +85,16 @@ export default function AuthPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
-                  Full Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
-                  placeholder="Enter your full name"
-                  required={!isLogin}
-                />
+                 <label htmlFor="username" className="block text-sm font-medium text-slate-300 mb-2">
+                   Username
+                 </label>                <input
+                   id="username"
+                   type="text"
+                   value={username}
+                   onChange={(e) => setUsername(e.target.value)}
+                   className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                   placeholder="Enter your username"
+                   required={!isLogin}                />
               </div>
             )}
 
