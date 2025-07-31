@@ -35,8 +35,8 @@ export default function AuthPage() {
     setError(null);
     setSuccess(null);
      // Username validation: only a-z, no spaces
-     if (!isLogin && !/^[a-z]+$/.test(username)) {
-       setError('Username must contain only lowercase letters (a-z), no spaces.');
+     if (!isLogin && !/^[a-z]{3,32}$/.test(username)) {
+       setError('Username must be 3-32 lowercase letters (a-z), no spaces.');
        setIsLoading(false);
        return;
      }
@@ -105,8 +105,10 @@ export default function AuthPage() {
                    placeholder="Enter your username"
                    required={!isLogin}
                    autoComplete="username"
-                   pattern="[a-z]+"
-                   title="Username must contain only lowercase letters (a-z), no spaces."
+                   pattern="[a-z]{3,32}"
+                   minLength={3}
+                   maxLength={32}
+                   title="Username must be 3-32 lowercase letters (a-z), no spaces."
                 />
               </div>
             )}
