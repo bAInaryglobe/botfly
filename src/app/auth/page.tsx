@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { register, login } from '@/lib/appwrite';
+import { register, login, getCurrentUser } from '@/lib/appwrite';
 import Link from 'next/link';
 
 export default function AuthPage() {
@@ -14,6 +14,19 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    getCurrentUser()
+      .then(() => {
+        if (isMounted) router.replace('/app');
+      })
+      .catch(() => {
+        if (isMounted) setCheckingAuth(false);
+      });
+    return () => { isMounted = false; };
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +54,14 @@ export default function AuthPage() {
       setIsLoading(false);
     }
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-900">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-6">
