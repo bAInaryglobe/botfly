@@ -32,28 +32,28 @@ export async function getCurrentUser() {
 }
 
 // --- Database Wrappers ---
-export async function createDocument<T>(
+export async function createDocument(
   databaseId: string,
   collectionId: string,
-  data: T,
+  data: Record<string, any>,
   permissions?: string[]
 ) {
   return databases.createDocument(databaseId, collectionId, ID.unique(), data, permissions);
 }
 
-export async function getDocument<T>(
+export async function getDocument(
   databaseId: string,
   collectionId: string,
   documentId: string
 ) {
-  return databases.getDocument<T>(databaseId, collectionId, documentId);
+  return databases.getDocument(databaseId, collectionId, documentId);
 }
 
-export async function updateDocument<T>(
+export async function updateDocument(
   databaseId: string,
   collectionId: string,
   documentId: string,
-  data: Partial<T>,
+  data: Record<string, any>,
   permissions?: string[]
 ) {
   return databases.updateDocument(databaseId, collectionId, documentId, data, permissions);
@@ -67,12 +67,10 @@ export async function deleteDocument(
   return databases.deleteDocument(databaseId, collectionId, documentId);
 }
 
-export async function listDocuments<T>(
+export async function listDocuments(
   databaseId: string,
   collectionId: string,
-  queries?: string[],
-  limit?: number,
-  offset?: number
+  queries?: string[]
 ) {
-  return databases.listDocuments<T>(databaseId, collectionId, queries, limit, offset);
+  return databases.listDocuments(databaseId, collectionId, queries);
 }
