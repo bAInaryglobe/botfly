@@ -1,12 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
+
+interface User {
+  $id: string;
+  name: string;
+  email: string;
+  [key: string]: unknown;
+}
 import AuthGuard from "@/components/AuthGuard";
 import { getCurrentUser, logout } from "@/lib/appwrite";
 import { useRouter } from "next/navigation";
 
 export default function AppPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
 
@@ -119,7 +126,7 @@ export default function AppPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-white p-6 rounded-lg border border-slate-200">
                     <h3 className="text-lg font-semibold text-slate-900 mb-2">Welcome Back!</h3>
-                    <p className="text-slate-600">You're successfully logged in to Botfly.</p>
+                    <p className="text-slate-600">You&apos;re successfully logged in to Botfly.</p>
                   </div>
                   <div className="bg-white p-6 rounded-lg border border-slate-200">
                     <h3 className="text-lg font-semibold text-slate-900 mb-2">Projects</h3>

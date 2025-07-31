@@ -35,7 +35,7 @@ export async function getCurrentUser() {
 export async function createDocument(
   databaseId: string,
   collectionId: string,
-  data: Record<string, any>,
+  data: Record<string, unknown>,
   permissions?: string[]
 ) {
   return databases.createDocument(databaseId, collectionId, ID.unique(), data, permissions);
@@ -53,7 +53,7 @@ export async function updateDocument(
   databaseId: string,
   collectionId: string,
   documentId: string,
-  data: Record<string, any>,
+  data: Record<string, unknown>,
   permissions?: string[]
 ) {
   return databases.updateDocument(databaseId, collectionId, documentId, data, permissions);

@@ -49,15 +49,21 @@ export default function AuthPage() {
          try {
            await login(email, password);
            router.push('/app');
-         } catch (loginErr: any) {
-           setError('Account created, but failed to log in: ' + (loginErr?.message || 'Unknown error.'));
-           return;
-         }
-       }
-     } catch (err: any) {
-       setError(err?.message || 'Authentication failed.');
-     } finally {
-       setIsLoading(false);
+          } catch (loginErr: unknown) {
+            let msg = 'Account created, but failed to log in.';
+            if (loginErr && typeof loginErr === 'object' && 'message' in loginErr) {
+              msg += ' ' + (loginErr as { message: string }).message;
+            }
+            setError(msg);
+            return;
+          }       }
+      } catch (err: unknown) {
+        let msg = 'Authentication failed.';
+        if (err && typeof err === 'object' && 'message' in err) {
+          msg = (err as { message: string }).message;
+        }
+        setError(msg);
+      } finally {       setIsLoading(false);
      }
    };
   if (checkingAuth) {
