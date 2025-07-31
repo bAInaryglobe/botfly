@@ -34,27 +34,32 @@ export default function AuthPage() {
     
     setError(null);
     setSuccess(null);
-    try {
-      if (isLogin) {
-        await login(email, password);
-        router.push('/app');
-      } else {
-        await register(email, password, username);
-        try {
-          await login(email, password);
-          router.push('/app');
-        } catch (loginErr: any) {
-          setError('Account created, but failed to log in: ' + (loginErr?.message || 'Unknown error.'));
-          return;
-        }
-      }
-    } catch (err: any) {
-      setError(err?.message || 'Authentication failed.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+     // Username validation: only a-z, no spaces
+     if (!isLogin && !/^[a-z]+$/.test(username)) {
+       setError('Username must contain only lowercase letters (a-z), no spaces.');
+       setIsLoading(false);
+       return;
+     }
+     try {
+       if (isLogin) {
+         await login(email, password);
+         router.push('/app');
+       } else {
+         await register(email, password, username);
+         try {
+           await login(email, password);
+           router.push('/app');
+         } catch (loginErr: any) {
+           setError('Account created, but failed to log in: ' + (loginErr?.message || 'Unknown error.'));
+           return;
+         }
+       }
+     } catch (err: any) {
+       setError(err?.message || 'Authentication failed.');
+     } finally {
+       setIsLoading(false);
+     }
+   };
   if (checkingAuth) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-900">
@@ -91,10 +96,18 @@ export default function AuthPage() {
                    id="username"
                    type="text"
                    value={username}
-                   onChange={(e) => setUsername(e.target.value)}
+                   onChange={(e) => {
+                     // Only allow a-z, no spaces
+                     const val = e.target.value.toLowerCase().replace(/[^a-z]/g, "");
+                     setUsername(val);
+                   }}
                    className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                    placeholder="Enter your username"
-                   required={!isLogin}                />
+                   required={!isLogin}
+                   autoComplete="username"
+                   pattern="[a-z]+"
+                   title="Username must contain only lowercase letters (a-z), no spaces."
+                />
               </div>
             )}
 
