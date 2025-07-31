@@ -23,3 +23,28 @@
 
 
 always push all changes to githhb (commit messages no more than one concise sentence)
+
+## Proposed Appwrite Database Structure
+
+| Collection | Purpose | Example Fields |
+|------------|---------|---------------|
+| users      | User profiles (optional, for extra info) | name, email, avatarUrl, createdAt |
+| projects   | User projects/workspaces | name, description, owner (userId), createdAt, updatedAt |
+| agents     | AI agents per project | name, projectId, config, status, createdAt, updatedAt |
+| messages   | Chat or logs for agents | agentId, projectId, userId, content, type, timestamp |
+| settings   | User or project settings | userId/projectId, key, value |
+
+### Example: "projects" Collection Schema
+- name (string, required)
+- description (string, optional)
+- owner (userId, required, relation to users)
+- createdAt (datetime, auto)
+- updatedAt (datetime, auto)
+
+### Example: "agents" Collection Schema
+- name (string, required)
+- projectId (string, required, relation to projects)
+- config (json, required)
+- status (string, e.g., 'active', 'paused')
+- createdAt (datetime, auto)
+- updatedAt (datetime, auto)
