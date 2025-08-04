@@ -1,0 +1,473 @@
+{
+    "projectId": "botfly",
+    "endpoint": "https://fra.cloud.appwrite.io/v1",
+    "databases": [
+        {
+            "$id": "core",
+            "name": "core",
+            "enabled": true
+        }
+    ],
+    "collections": [
+        {
+            "$id": "users",
+            "$permissions": [],
+            "databaseId": "core",
+            "name": "Users",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 64,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "email",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "format": "email",
+                    "default": null
+                },
+                {
+                    "key": "avatarUrl",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "format": "url",
+                    "default": null
+                },
+                {
+                    "key": "createdAt",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "deleted",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": false
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "projects",
+            "$permissions": [],
+            "databaseId": "core",
+            "name": "Projects",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 64,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "description",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 255,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "createdAt",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "updatedAt",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "deleted",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": false
+                },
+                {
+                    "key": "owner",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "users",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "projects",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "bots",
+            "$permissions": [],
+            "databaseId": "core",
+            "name": "Bots",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 64,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "type",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "config",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 1000,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "status",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 16,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "createdAt",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "updatedAt",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "deleted",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": false
+                },
+                {
+                    "key": "projectId",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "projects",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "bots",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "agents",
+            "$permissions": [],
+            "databaseId": "core",
+            "name": "Agents",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 64,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "config",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 1000,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "status",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 16,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "createdAt",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "updatedAt",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "deleted",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": false
+                },
+                {
+                    "key": "projectId",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "projects",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "agents",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "messages",
+            "$permissions": [],
+            "databaseId": "core",
+            "name": "Messages",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "content",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 5000,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "type",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 16,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "timestamp",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "deleted",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": false
+                },
+                {
+                    "key": "botId",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "bots",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "messages",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                },
+                {
+                    "key": "agentId",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "agents",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "messages",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                },
+                {
+                    "key": "projectId",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "projects",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "messages",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                },
+                {
+                    "key": "userId",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "users",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "messages",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "settings",
+            "$permissions": [],
+            "databaseId": "core",
+            "name": "Settings",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "key",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 64,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "value",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 1000,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "deleted",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": false
+                },
+                {
+                    "key": "userId",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "users",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "settings",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                },
+                {
+                    "key": "projectId",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "projects",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "settings",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        }
+    ],
+    "projectName": "botfly",
+    "settings": {
+        "services": {
+            "account": true,
+            "avatars": true,
+            "databases": true,
+            "locale": true,
+            "health": true,
+            "storage": true,
+            "teams": true,
+            "users": true,
+            "sites": true,
+            "functions": true,
+            "graphql": true,
+            "messaging": true
+        },
+        "auth": {
+            "methods": {
+                "jwt": true,
+                "phone": true,
+                "invites": true,
+                "anonymous": true,
+                "email-otp": true,
+                "magic-url": true,
+                "email-password": true
+            },
+            "security": {
+                "duration": 31536000,
+                "limit": 0,
+                "sessionsLimit": 10,
+                "passwordHistory": 0,
+                "passwordDictionary": false,
+                "personalDataCheck": false,
+                "sessionAlerts": false,
+                "mockNumbers": []
+            }
+        }
+    }
+}
