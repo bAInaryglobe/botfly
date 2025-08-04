@@ -3,8 +3,9 @@ import { Client, Account, Databases, ID, Models } from 'appwrite';
 // --- Environment Variables ---
 const projectId = process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID;
 const endpoint = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT;
+const databaseId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || 'core';
 
-if (!projectId || !endpoint) {
+if (!projectId || !endpoint || !databaseId) {
   throw new Error('Appwrite environment variables are not set.');
 }
 
@@ -23,7 +24,10 @@ export const COLLECTION_IDS = {
   agents: process.env.NEXT_PUBLIC_APPWRITE_AGENTS_COLLECTION_ID || 'agents',
   messages: process.env.NEXT_PUBLIC_APPWRITE_MESSAGES_COLLECTION_ID || 'messages',
   settings: process.env.NEXT_PUBLIC_APPWRITE_SETTINGS_COLLECTION_ID || 'settings',
+  bots: process.env.NEXT_PUBLIC_APPWRITE_BOTS_COLLECTION_ID || 'bots',
 };
+
+export { databaseId };
 
 // --- Account (Auth) Wrappers ---
 /**
