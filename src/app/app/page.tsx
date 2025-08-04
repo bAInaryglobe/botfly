@@ -11,6 +11,90 @@ import AuthGuard from "@/components/AuthGuard";
 import { getCurrentUser, logout } from "@/lib/appwrite";
 import { useRouter } from "next/navigation";
 
+interface Bot {
+  id: string;
+  name: string;
+  type: 'telegram';
+  token: string;
+}
+
+function BotsTab() {
+  const [bots, setBots] = useState<Bot[]>([]);
+  const [name, setName] = useState('');
+  const [token, setToken] = useState('');
+  const [error, setError] = useState('');
+
+  const handleAddBot = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    if (!name.trim() || !token.trim()) {
+      setError('Name and token are required.');
+      return;
+    }
+    setBots([
+      ...bots,
+      {
+        id: Date.now().toString(),
+        name: name.trim(),
+        type: 'telegram',
+        token: token.trim(),
+      },
+    ]);
+    setName('');
+    setToken('');
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-lg border border-slate-200 max-w-2xl mx-auto">
+      <h3 className="text-lg font-semibold text-slate-900 mb-4">Your Bots</h3>
+      {bots.length === 0 ? (
+        <p className="text-slate-600 mb-4">No bots yet. Add your first Telegram bot below!</p>
+      ) : (
+        <ul className="mb-6 divide-y divide-slate-100">
+          {bots.map((bot) => (
+            <li key={bot.id} className="py-3 flex items-center justify-between">
+              <div>
+                <span className="font-medium text-slate-900">{bot.name}</span>
+                <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">{bot.type}</span>
+              </div>
+              <span className="text-slate-400 text-xs">{bot.token.replace(/.(?=.{4})/g, '*')}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <form onSubmit={handleAddBot} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Bot Name</label>
+          <input
+            type="text"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            className="w-full px-3 py-2 border border-slate-300 rounded-md"
+            placeholder="e.g. My Telegram Bot"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Telegram Token</label>
+          <input
+            type="text"
+            value={token}
+            onChange={e => setToken(e.target.value)}
+            className="w-full px-3 py-2 border border-slate-300 rounded-md"
+            placeholder="123456:ABC-DEF..."
+          />
+        </div>
+        {error && <p className="text-red-600 text-sm">{error}</p>}
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
+        >
+          Add Telegram Bot
+        </button>
+      </form>
+    </div>
+  );
+}
+
 export default function AppPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -30,12 +114,14 @@ export default function AppPage() {
     }
   };
 
-  const sidebarItems = [
-    { id: "dashboard", label: "Dashboard", icon: "📊" },
-    { id: "projects", label: "Projects", icon: "📁" },
-    { id: "analytics", label: "Analytics", icon: "📈" },
-    { id: "settings", label: "Settings", icon: "⚙️" },
-  ];
+const sidebarItems = [
+  { id: "dashboard", label: "Dashboard", icon: "📊" },
+  { id: "bots", label: "Bots", icon: "🤖" },
+  { id: "projects", label: "Projects", icon: "📁" },
+  { id: "analytics", label: "Analytics", icon: "📈" },
+  { id: "settings", label: "Settings", icon: "⚙️" },
+];
+
 
   return (
     <AuthGuard>
@@ -138,6 +224,10 @@ export default function AppPage() {
                   </div>
                 </div>
               </div>
+            )}
+
+            {activeTab === "bots" && (
+              <BotsTab />
             )}
             {activeTab === "projects" && (
               <div className="bg-white p-6 rounded-lg border border-slate-200">
