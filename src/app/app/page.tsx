@@ -26,6 +26,17 @@ const BOT_TYPES = [
   // Add more bot types and their required fields here
 ];
 
+function mapDocumentToBot(doc: any): Bot {
+  return {
+    $id: doc.$id,
+    name: typeof doc.name === 'string' ? doc.name : 'Unnamed Bot',
+    type: typeof doc.type === 'string' ? doc.type : 'unknown',
+    token: typeof doc.token === 'string' ? doc.token : undefined,
+    webhook: typeof doc.webhook === 'string' ? doc.webhook : undefined,
+    ...doc,
+  };
+}
+
 function BotsTab() {
   const [bots, setBots] = useState<Bot[]>([]);
   const [name, setName] = useState('');
@@ -45,7 +56,7 @@ function BotsTab() {
         setError(res.message);
         setBots([]);
       } else {
-        setBots(res.documents as Bot[]);
+        setBots(Array.isArray(res.documents) ? res.documents.map(mapDocumentToBot) : []);
       }
       setLoading(false);
     }
@@ -86,7 +97,7 @@ function BotsTab() {
       setError(res.message);
       return;
     }
-    setBots([...bots, res as Bot]);
+    setBots([...bots, mapDocumentToBot(res)]);
     setName('');
     setToken('');
     setWebhook('');
