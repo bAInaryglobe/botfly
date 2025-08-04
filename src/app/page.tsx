@@ -23,7 +23,7 @@ export default function Home() {
           </h1>
           
           <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto">
-            Create intelligent Telegram bots and AI agents that understand, learn, and automate your workflows with cutting-edge technology.
+            Create intelligent bots and AI agents that understand, learn, and automate your workflows with cutting-edge technology.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
