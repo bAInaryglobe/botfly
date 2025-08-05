@@ -64,9 +64,14 @@ export default function BotsPage() {
         }
       }
     }
+    const now = new Date().toISOString();
     const data: Record<string, unknown> = {
       name: name.trim(),
       type,
+      config: "{}", // Always include required config field
+      createdAt: now,
+      updatedAt: now,
+      deleted: false,
     };
     if (type === "telegram") data.token = token.trim();
     if (type === "discord") data.webhook = webhook.trim();
