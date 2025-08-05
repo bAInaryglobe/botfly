@@ -10,7 +10,7 @@ const CRITERIA_OPTIONS = [
   { value: "containsCheck", label: "Contains ✅" },
 ];
 
-function SendMessageForm({ botId }: { botId: string }) {
+function SendMessageForm({ token }: { token: string }) {
   const [userId, setUserId] = useState("");
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
@@ -21,10 +21,10 @@ function SendMessageForm({ botId }: { botId: string }) {
     setSending(true);
     setResult(null);
     try {
-      const res = await fetch(`/api/telegram-bot/${botId}`, {
+      const res = await fetch(`/api/telegram-bot/send-message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: Number(userId), text }),
+        body: JSON.stringify({ token, userId: Number(userId), text }),
       });
       const data = await res.json();
       if (res.ok) setResult("Message sent!");
@@ -235,6 +235,20 @@ export default function BotDetailsPage() {
       <h2 className="text-xl font-bold mb-2">Bot: {bot.name}</h2>
       <p className="mb-2 text-slate-700">Type: {bot.type}</p>
       <p className="mb-4 text-slate-500 text-xs">ID: {bot.$id}</p>
+      {/* Telegram Token Section */}
+      <div className="mb-4 p-2 bg-slate-50 border border-slate-200 rounded">
+        <span className="block text-xs text-slate-500 mb-1">Telegram Bot Token (from config):</span>
+        <span className="font-mono text-xs break-all">
+          {(() => {
+            try {
+              const config = JSON.parse(bot.config);
+              return typeof config === 'string' ? config : config.token || <span className="text-red-600">No token in config</span>;
+            } catch {
+              return <span className="text-red-600">Malformed config</span>;
+            }
+          })()}
+        </span>
+      </div>
       <div className="mb-4 flex items-center space-x-4">
         <span className="text-sm">Status: <span className={status === "running" ? "text-green-600" : "text-red-600"}>{status}</span></span>
         <button onClick={startBot} disabled={starting || status === "running"} className="px-3 py-1 bg-green-600 text-white rounded disabled:opacity-50">Start</button>
@@ -283,7 +297,14 @@ export default function BotDetailsPage() {
     {/* Send Message to User Section */}
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg border border-slate-200 mt-6">
       <h3 className="font-semibold mb-2">Send Message to Telegram User</h3>
-      <SendMessageForm botId={botId} />
+      <SendMessageForm token={(() => {
+        try {
+          const config = JSON.parse(bot.config);
+          return typeof config === 'string' ? config : config.token || '';
+        } catch {
+          return '';
+        }
+      })()} />
     </div>
     </>
   );
