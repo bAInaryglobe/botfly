@@ -41,8 +41,19 @@ export async function PATCH(req: NextRequest) {
   return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
 }
 
+import { sendTelegramMessage } from '@/integrations/telegram/telegram';
+
 export async function POST(req: NextRequest) {
-  // Will be replaced with direct send logic
+  try {
+    const { userId, text } = await req.json();
+    if (!userId || !text) {
+      return NextResponse.json({ error: 'Missing userId or text' }, { status: 400 });
+    }
+    await sendTelegramMessage(userId, text);
+    return NextResponse.json({ status: 'sent' });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || 'Failed to send message' }, { status: 500 });
+  }
 }
 
 // POST/PUT/DELETE endpoints for rules can be added as needed, but bot launching is now handled by the standalone script.

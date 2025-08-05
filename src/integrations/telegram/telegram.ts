@@ -10,6 +10,15 @@ if (!token) {
 
 export const bot = new Telegraf(token);
 
+/**
+ * Send a message to a Telegram user immediately (real-time, no queue).
+ * @param userId Telegram user ID
+ * @param text Message text
+ */
+export async function sendTelegramMessage(userId: number, text: string): Promise<void> {
+  await bot.telegram.sendMessage(userId, text);
+}
+
 // Example: Basic handlers
 bot.start((ctx) => ctx.reply('Welcome to Botfly!'));
 bot.help((ctx) => ctx.reply('Send me a message or command.'));

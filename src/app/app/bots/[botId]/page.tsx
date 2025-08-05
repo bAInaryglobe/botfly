@@ -27,10 +27,10 @@ function SendMessageForm({ botId }: { botId: string }) {
         body: JSON.stringify({ userId: Number(userId), text }),
       });
       const data = await res.json();
-      if (res.ok) setResult("Message queued for delivery.");
-      else setResult(data.error || "Failed to queue message.");
+      if (res.ok) setResult("Message sent!");
+      else setResult(data.error || "Failed to send message.");
     } catch (e) {
-      setResult("Failed to queue message.");
+      setResult("Failed to send message.");
     }
     setSending(false);
   }
