@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendTelegramMessage } from '@/integrations/telegram/telegram';
+import { Telegraf } from 'telegraf';
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,10 +7,10 @@ export async function POST(req: NextRequest) {
     if (!token || !userId || !text) {
       return NextResponse.json({ error: 'Missing token, userId, or text' }, { status: 400 });
     }
-    await sendTelegramMessage(token, userId, text);
+    const bot = new Telegraf(token);
+    await bot.telegram.sendMessage(userId, text);
     return NextResponse.json({ status: 'sent' });
   } catch (err) {
-    const error = err as Error;
-    return NextResponse.json({ error: error?.message || 'Failed to send message' }, { status: 500 });
+    return NextResponse.json({ error: (err as Error).message || 'Failed to send message' }, { status: 500 });
   }
 }

@@ -13,6 +13,7 @@ const CRITERIA_OPTIONS = [
 function SendMessageForm({ token }: { token: string }) {
   const [userId, setUserId] = useState("");
   const [text, setText] = useState("");
+  const [botToken, setBotToken] = useState(token);
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
@@ -24,7 +25,7 @@ function SendMessageForm({ token }: { token: string }) {
       const res = await fetch(`/api/telegram-bot/send-message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, userId: Number(userId), text }),
+        body: JSON.stringify({ token: botToken, userId: Number(userId), text }),
       });
       const data = await res.json();
       if (res.ok) setResult("Message sent!");
@@ -37,6 +38,16 @@ function SendMessageForm({ token }: { token: string }) {
 
   return (
     <form onSubmit={handleSend} className="flex flex-col space-y-2">
+      <div>
+        <label className="block text-sm font-medium mb-1">Bot Token</label>
+        <input
+          type="text"
+          value={botToken}
+          onChange={e => setBotToken(e.target.value)}
+          className="px-2 py-1 border rounded w-full font-mono text-xs"
+          required
+        />
+      </div>
       <div>
         <label className="block text-sm font-medium mb-1">Telegram User ID</label>
         <input
