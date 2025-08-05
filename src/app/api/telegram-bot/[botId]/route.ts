@@ -15,20 +15,29 @@ function getBotToken(botId: string, body: any): string | null {
 
 // Helper: add listeners for group rules and general logging
 function setupGroupListeners(bot: Telegraf<any>, botId: string) {
+  console.log(`[DEBUG] Setting up listeners for botId=${botId}`);
   bot.on('text', async (ctx) => {
+    console.log(`[DEBUG] Received text message for botId=${botId}:`, ctx.message?.text);
+    console.log(`[DEBUG] Chat ID: ${ctx.chat?.id}, User: ${ctx.from?.username || ctx.from?.first_name}`);
+    console.log(`[DEBUG] Logging enabled for ${botId}: ${loggingEnabled[botId]}`);
     // General logging (if enabled)
     if (loggingEnabled[botId]) {
       if (!logs[botId]) logs[botId] = [];
-      logs[botId].push({
+      const logEntry = {
         date: new Date().toISOString(),
         user: ctx.from?.username || ctx.from?.first_name || 'unknown',
         userId: ctx.from?.id,
         chatId: ctx.chat?.id,
         chatTitle: 'title' in ctx.chat ? ctx.chat.title : '',
         text: ctx.message?.text || '',
-      });
+      };
+      logs[botId].push(logEntry);
+      console.log(`[DEBUG] Log entry added for botId=${botId}:`, logEntry);
+      console.log(`[DEBUG] Total logs for ${botId}: ${logs[botId].length}`);
       // Limit logs to last 1000 entries
       if (logs[botId].length > 1000) logs[botId].shift();
+    } else {
+      console.log(`[DEBUG] Logging disabled for ${botId}, skipping log entry`);
     }
     // Group rules
     const groupRules = rules[botId] || [];
@@ -49,18 +58,33 @@ function setupGroupListeners(bot: Telegraf<any>, botId: string) {
 
 export async function POST(req: NextRequest, { params }: { params: { botId: string } }) {
   const botId = params.botId;
+  console.log(`[DEBUG] Starting bot for botId=${botId}`);
   const body = await req.json();
+  console.log(`[DEBUG] Request body:`, body);
   const token = getBotToken(botId, body);
+  console.log(`[DEBUG] Bot token for botId=${botId}:`, token ? `${token.substring(0, 10)}...` : 'null');
   if (!token) return NextResponse.json({ error: 'Missing bot token' }, { status: 400 });
-  if (bots[botId]) return NextResponse.json({ status: 'already running' });
-  const bot = new Telegraf(token);
-  setupGroupListeners(bot, botId);
-  await bot.launch();
-  bots[botId] = bot;
-  // Initialize logging state if not set
-  if (typeof loggingEnabled[botId] === 'undefined') loggingEnabled[botId] = false;
-  if (!logs[botId]) logs[botId] = [];
-  return NextResponse.json({ status: 'started' });
+  if (bots[botId]) {
+    console.log(`[DEBUG] Bot ${botId} already running`);
+    return NextResponse.json({ status: 'already running' });
+  }
+  try {
+    const bot = new Telegraf(token);
+    console.log(`[DEBUG] Created Telegraf instance for botId=${botId}`);
+    setupGroupListeners(bot, botId);
+    console.log(`[DEBUG] Set up listeners for botId=${botId}`);
+    await bot.launch();
+    console.log(`[DEBUG] Bot ${botId} launched successfully`);
+    bots[botId] = bot;
+    // Initialize logging state if not set
+    if (typeof loggingEnabled[botId] === 'undefined') loggingEnabled[botId] = false;
+    if (!logs[botId]) logs[botId] = [];
+    console.log(`[DEBUG] Bot ${botId} startup complete. Logging enabled: ${loggingEnabled[botId]}`);
+    return NextResponse.json({ status: 'started' });
+  } catch (error) {
+    console.error(`[DEBUG] Error starting bot ${botId}:`, error);
+    return NextResponse.json({ error: 'Failed to start bot' }, { status: 500 });
+  }
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: { botId: string } }) {
@@ -101,9 +125,11 @@ export async function PATCH(req: NextRequest, { params }: { params: { botId: str
   // Remove a group rule or toggle logging
   const botId = params.botId;
   const body = await req.json();
+  console.log(`[DEBUG] PATCH request for botId=${botId}:`, body);
   // Toggle logging
   if (typeof body.loggingEnabled === 'boolean') {
     loggingEnabled[botId] = body.loggingEnabled;
+    console.log(`[DEBUG] Logging toggled for ${botId}: ${loggingEnabled[botId]}`);
     return NextResponse.json({ status: 'logging toggled', loggingEnabled: loggingEnabled[botId] });
   }
   // Remove a group rule

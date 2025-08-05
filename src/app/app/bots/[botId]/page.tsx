@@ -176,6 +176,7 @@ export default function BotDetailsPage() {
   if (!bot) return <div className="p-6">Bot not found.</div>;
 
   return (
+    <>
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg border border-slate-200 mt-8">
       <h2 className="text-xl font-bold mb-2">Bot: {bot.name}</h2>
       <p className="mb-2 text-slate-700">Type: {bot.type}</p>
@@ -185,14 +186,6 @@ export default function BotDetailsPage() {
         <button onClick={startBot} disabled={starting || status === "running"} className="px-3 py-1 bg-green-600 text-white rounded disabled:opacity-50">Start</button>
         <button onClick={stopBot} disabled={stopping || status !== "running"} className="px-3 py-1 bg-red-600 text-white rounded disabled:opacity-50">Stop</button>
       </div>
-
-      {/* General Logs Section */}
-      <LoggingInfo
-        loggingEnabled={loggingEnabled}
-        loadingLogs={loadingLogs}
-        logs={logs}
-        toggleLogging={toggleLogging}
-      />
 
       {/* Group Rules Section */}
       <form onSubmit={addRule} className="mb-6 flex flex-col md:flex-row md:items-end md:space-x-4 space-y-2 md:space-y-0">
@@ -222,5 +215,16 @@ export default function BotDetailsPage() {
         )}
       </div>
     </div>
+
+    {/* Logging Info Section - separate card below main info */}
+    <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg border border-slate-200 mt-6">
+      <LoggingInfo
+        loggingEnabled={loggingEnabled}
+        loadingLogs={loadingLogs}
+        logs={logs}
+        toggleLogging={toggleLogging}
+      />
+    </div>
+    </>
   );
 }
