@@ -1,0 +1,20 @@
+[
+  {
+    "type": "sendMessage",
+    "userId": 123456789,
+    "text": "Hello from Botfly!",
+    "processed": false
+  },
+  {
+    "type": "sendMessage",
+    "userId": 6085555492,
+    "text": "Helloooo",
+    "processed": false
+  },
+  {
+    "type": "sendMessage",
+    "userId": 6085555492,
+    "text": "Helloooo",
+    "processed": false
+  }
+]

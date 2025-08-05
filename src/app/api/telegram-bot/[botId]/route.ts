@@ -41,4 +41,8 @@ export async function PATCH(req: NextRequest) {
   return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
 }
 
+export async function POST(req: NextRequest) {
+  // Will be replaced with direct send logic
+}
+
 // POST/PUT/DELETE endpoints for rules can be added as needed, but bot launching is now handled by the standalone script.

@@ -10,6 +10,60 @@ const CRITERIA_OPTIONS = [
   { value: "containsCheck", label: "Contains ✅" },
 ];
 
+function SendMessageForm({ botId }: { botId: string }) {
+  const [userId, setUserId] = useState("");
+  const [text, setText] = useState("");
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+
+  async function handleSend(e: React.FormEvent) {
+    e.preventDefault();
+    setSending(true);
+    setResult(null);
+    try {
+      const res = await fetch(`/api/telegram-bot/${botId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: Number(userId), text }),
+      });
+      const data = await res.json();
+      if (res.ok) setResult("Message queued for delivery.");
+      else setResult(data.error || "Failed to queue message.");
+    } catch (e) {
+      setResult("Failed to queue message.");
+    }
+    setSending(false);
+  }
+
+  return (
+    <form onSubmit={handleSend} className="flex flex-col space-y-2">
+      <div>
+        <label className="block text-sm font-medium mb-1">Telegram User ID</label>
+        <input
+          type="number"
+          value={userId}
+          onChange={e => setUserId(e.target.value)}
+          className="px-2 py-1 border rounded w-48"
+          required
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium mb-1">Message</label>
+        <textarea
+          value={text}
+          onChange={e => setText(e.target.value)}
+          className="px-2 py-1 border rounded w-full min-h-[60px]"
+          required
+        />
+      </div>
+      <button type="submit" disabled={sending} className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50">
+        {sending ? "Sending..." : "Send Message"}
+      </button>
+      {result && <div className="text-sm mt-2 text-slate-600">{result}</div>}
+    </form>
+  );
+}
+
 export default function BotDetailsPage() {
   // General logs state
   const [logs, setLogs] = useState<any[]>([]);
@@ -224,6 +278,12 @@ export default function BotDetailsPage() {
         logs={logs}
         toggleLogging={toggleLogging}
       />
+    </div>
+
+    {/* Send Message to User Section */}
+    <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg border border-slate-200 mt-6">
+      <h3 className="font-semibold mb-2">Send Message to Telegram User</h3>
+      <SendMessageForm botId={botId} />
     </div>
     </>
   );

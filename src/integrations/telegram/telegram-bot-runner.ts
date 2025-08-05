@@ -59,5 +59,6 @@ bot.on('text', (ctx) => {
 bot.launch();
 console.log('Telegram bot started and polling.');
 
+
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
