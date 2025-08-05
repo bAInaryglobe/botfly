@@ -111,11 +111,11 @@ export default function BotsPage() {
                   <span className="font-medium text-slate-900">{bot.name}</span>
                   <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">{bot.type}</span>
                 </div>
-                {bot.type === "telegram" && bot.token && (
-                  <span className="text-slate-400 text-xs">{bot.token.replace(/.(?=.{4})/g, '*')}</span>
+                {bot.type === "telegram" && (bot as any).token && (
+                  <span className="text-slate-400 text-xs">{(bot as any).token.replace(/.(?=.{4})/g, '*')}</span>
                 )}
-                {bot.type === "discord" && bot.webhook && (
-                  <span className="text-slate-400 text-xs">{bot.webhook.replace(/.(?=.{4})/g, '*')}</span>
+                {bot.type === "discord" && (bot as any).webhook && (
+                  <span className="text-slate-400 text-xs">{(bot as any).webhook.replace(/.(?=.{4})/g, '*')}</span>
                 )}
               </li>
             ))}
