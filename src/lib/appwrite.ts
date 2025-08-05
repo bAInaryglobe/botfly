@@ -155,3 +155,31 @@ export async function listDocuments(
     return err instanceof Error ? err : new Error(String(err));
   }
 }
+
+/**
+ * Robustly fetch a bot by ID and extract its token.
+ * Returns { bot, token } or Error.
+ */
+export async function getBotById(botId: string): Promise<{ bot: Models.Document, token: string } | Error> {
+  try {
+    const bot = await getDocument(databaseId, COLLECTION_IDS.bots, botId);
+    if (bot instanceof Error || !bot) {
+      return new Error('Bot not found');
+    }
+    // Appwrite returns custom attributes as direct properties
+    const configStr = (bot as any).config;
+    let config: any;
+    try {
+      config = JSON.parse(configStr);
+    } catch {
+      return new Error('Bot config is malformed');
+    }
+    const token = typeof config === 'string' ? config : config.token;
+    if (!token) {
+      return new Error('Bot token not configured');
+    }
+    return { bot, token };
+  } catch (err) {
+    return err instanceof Error ? err : new Error(String(err));
+  }
+}
