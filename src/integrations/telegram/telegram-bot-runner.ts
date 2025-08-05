@@ -5,6 +5,7 @@ import path from 'path';
 // --- CONFIG ---
 const BOT_TOKEN = process.env.BOT_TOKEN || '';
 const LOGS_FILE = path.join(__dirname, 'telegram-bot-logs.json');
+const LOGGING_FLAG_FILE = path.join(__dirname, 'telegram-bot-logging-flag.json');
 
 if (!BOT_TOKEN) {
   console.error('Missing BOT_TOKEN env variable.');
@@ -25,10 +26,22 @@ function saveLogs(logs: any[]) {
 
 let logs = loadLogs();
 
+function isLoggingEnabled(): boolean {
+  try {
+    return JSON.parse(fs.readFileSync(LOGGING_FLAG_FILE, 'utf-8')).enabled;
+  } catch {
+    return false;
+  }
+}
+
 // --- BOT SETUP ---
 const bot = new Telegraf(BOT_TOKEN);
 
 bot.on('text', (ctx) => {
+  if (!isLoggingEnabled()) {
+    console.log('[SKIP LOG] Logging is disabled.');
+    return;
+  }
   const logEntry = {
     date: new Date().toISOString(),
     user: ctx.from?.username || ctx.from?.first_name || 'unknown',
