@@ -9,18 +9,26 @@ const BOT_TYPES = [
 ];
 
 function mapDocumentToBot(doc: any) {
+  let config: any = {};
+  try {
+    config = typeof doc.config === 'string' ? JSON.parse(doc.config) : {};
+  } catch {
+    config = {};
+  }
   return {
     $id: doc.$id,
     name: typeof doc.name === 'string' ? doc.name : 'Unnamed Bot',
     type: typeof doc.type === 'string' ? doc.type : 'unknown',
-    token: typeof doc.token === 'string' ? doc.token : undefined,
-    webhook: typeof doc.webhook === 'string' ? doc.webhook : undefined,
+    token: config.token,
+    webhook: config.webhook,
     ...doc,
   };
 }
 
+import type { Bots } from '@/types/appwrite';
+
 export default function BotsPage() {
-  const [bots, setBots] = useState<any[]>([]);
+  const [bots, setBots] = useState<Bots[]>([]);
   const [name, setName] = useState('');
   const [type, setType] = useState(BOT_TYPES[0].value);
   const [token, setToken] = useState('');
@@ -65,16 +73,17 @@ export default function BotsPage() {
       }
     }
     const now = new Date().toISOString();
+    let configObj: Record<string, string> = {};
+    if (type === "telegram") configObj.token = token.trim();
+    if (type === "discord") configObj.webhook = webhook.trim();
     const data: Record<string, unknown> = {
       name: name.trim(),
       type,
-      config: "{}", // Always include required config field
+      config: JSON.stringify(configObj),
       createdAt: now,
       updatedAt: now,
       deleted: false,
     };
-    if (type === "telegram") data.token = token.trim();
-    if (type === "discord") data.webhook = webhook.trim();
     const res = await createDocument(databaseId, COLLECTION_IDS.bots, data);
     if (res instanceof Error) {
       setError(res.message);
